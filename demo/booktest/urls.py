@@ -14,5 +14,7 @@ urlpatterns = [
     path("query", views.MyTest.as_view()),
     path("order", views.CreateOrder.as_view()),
     path("filter", views.FilterTest.as_view()),
+
+    path("wx/pay", views.CheckWXPay.as_view()),
 ]
 

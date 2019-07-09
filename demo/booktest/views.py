@@ -49,3 +49,10 @@ class FilterTest(ListAPIView):
 
     filter_backends = [OrderingFilter]  # 指定过滤后端为排序过滤
     ordering_fields = ["id", "buyer_id"]    # 指定排序字段
+
+
+class CheckWXPay(APIView):
+    def post(self, request):
+        data = request.data.dict()
+        print(data)
+        return Response({"data": data})
