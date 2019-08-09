@@ -1,17 +1,16 @@
 import json
 import time
 
+from django_redis import get_redis_connection
 from rest_framework.filters import OrderingFilter
-from rest_framework.pagination import PageNumberPagination
-from rest_framework.views import APIView
 from rest_framework.generics import GenericAPIView, ListAPIView
 from rest_framework.response import Response
-from django_redis import get_redis_connection
+from rest_framework.views import APIView
 
 # Create your views here.
 from booktest.models import SoOrderGoods, SoOrder
-from booktest.serializers import SoOrderSerializer, SoOrderSerializerTset, SoOrderSerializerCher, \
-    UserBrowseHistorySerializer
+from booktest.serializers import SoOrderSerializer, SoOrderSerializerTset, SoOrderSerializerCher
+from utils.my_page import Standard
 
 
 class UserBrowseHistoryView(GenericAPIView):
