@@ -6,6 +6,8 @@
 @Description		: 
 @Software           : PyCharm
 """
+import json
+
 from rest_framework import serializers
 
 from booktest.models import SoOrderGoods, SoOrder
@@ -27,4 +29,27 @@ class SoOrderSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class SoOrderSerializerTset(serializers.Serializer):
+    buyer_id = serializers.IntegerField(required=False)
 
+    def validate(self, attrs):
+        return attrs
+
+
+class SoOrderSerializerCher(serializers.ModelSerializer):
+    order_sn = serializers.SerializerMethodField()
+
+    def get_order_sn(self, obj):
+        return json.loads(obj.order_sn)
+
+    class Meta:
+        model = SoOrder
+        exclude = ["resource"]
+
+
+class UserBrowseHistorySerializer(serializers.Serializer):
+    """用户浏览记录序列化器"""
+    goods_id = serializers.IntegerField(label="商品id", min_value=1)
+
+    def create(self, validated_data):
+        pass
