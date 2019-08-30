@@ -31,29 +31,30 @@ class UserBrowseHistoryView(GenericAPIView):
 
 class MyTest(APIView):
     def get(self, request):
-        order = SoOrder.objects.filter(buyer_id="2")
+        order = SoOrder.objects.filter(buyer_id="99")
         serializer = SoOrderSerializer(order, many=True)
         return Response(serializer.data)
 
 
 class CreateOrder(APIView):
     def get(self, request):
+        a = {"a": "", "b": ""}
         order = SoOrder.objects.create(
-            buyer_id="99",
+            buyer_id="91",
             shop_id="2",
-            parent_id=1234567894,
+            parent_id=453453534,
             order_sn=json.dumps([1, 2, 3]),
             order_type="1",
             charge_id="1",
             shopping_id="1",
-            status="1",
+            status="0",
             goods_count="8",
             is_frozen="0",
             create_time=int(time.time())
         )
         SoOrderGoods.objects.create(
             order=order,
-            goods_name="名片",
+            goods_name=a.get("c", ""),
             count="1",
             money="1.00"
         )

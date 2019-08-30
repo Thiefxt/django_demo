@@ -17,9 +17,8 @@ CREATE TABLE `so_order` (
   `refund_id` int(11) DEFAULT NULL COMMENT '退款ID',
   PRIMARY KEY (`id`),
   KEY `buyer_id` (`buyer_id`) USING HASH,
-  KEY `shop_id` (`shop_id`) USING HASH,
-  KEY `create_time` (`create_time`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COMMENT='订单信息'
+  KEY `shop_id` (`shop_id`) USING HASH
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COMMENT='订单信息';
 
 
 
@@ -39,4 +38,31 @@ CREATE TABLE `so_order_goods` (
   `pt_coupons` decimal(10,2) DEFAULT NULL COMMENT '平台优惠金额',
   PRIMARY KEY (`id`),
   KEY `order_id` (`order_id`) USING HASH
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COMMENT='订单商品'
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COMMENT='订单商品';
+
+
+DROP TABLE IF EXISTS `su_users`;
+CREATE TABLE `su_users` (
+  `user_id` int(10) NOT NULL AUTO_INCREMENT COMMENT '用户id',
+  `email` varchar(128) DEFAULT '' COMMENT '邮箱',
+  `mobile` varchar(32) DEFAULT '' COMMENT '手机号',
+  `international_tel_code` varchar(32) DEFAULT '86' COMMENT '国际电话区号',
+  `username` varchar(32) DEFAULT NULL COMMENT '昵称',
+  `nick_name` varchar(32) DEFAULT NULL COMMENT '用户名',
+  `header` varchar(255) DEFAULT NULL COMMENT '头像图片地址',
+  `password` varchar(32) DEFAULT NULL COMMENT '密码',
+  `salt` char(4) DEFAULT NULL COMMENT '密码盐',
+  `wx_union_id` varchar(64) DEFAULT NULL COMMENT '微信对应平台unionId',
+  `qq_union_id` varchar(64) DEFAULT NULL COMMENT 'qq对应平台唯一unionId',
+  `wb_union_id` varchar(64) DEFAULT NULL COMMENT '微博对应平台唯一unionId',
+  `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '用户状态,1[激活],2[冻结]',
+  `reg_time` int(11) NOT NULL COMMENT '注册时间',
+  `last_login_time` int(11) DEFAULT NULL COMMENT '最后登录时间',
+  `register_source` tinyint(1) NOT NULL DEFAULT '1' COMMENT '注册来源,1[pc],2[qq],3[微博],4[微信],5[APP],6[h5]',
+  PRIMARY KEY (`user_id`),
+  KEY `email` (`email`),
+  KEY `mobile` (`mobile`),
+	UNIQUE KEY `wx_union_id` (`wx_union_id`),
+	UNIQUE KEY `qq_union_id` (`qq_union_id`),
+	UNIQUE KEY `wb_union_id` (`wb_union_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户主表';
