@@ -7,6 +7,7 @@
 @Software           : PyCharm
 """
 import random
+import re
 import traceback
 
 from rest_framework.views import exception_handler as drf_exception_handler
@@ -256,4 +257,33 @@ def random_str(length):
     for n in range(length):
         x = random.choice(rand_char)
         s.append(chr(x))
+    return ''.join(s)
+
+
+def judge_mobile(mobile):
+    if len(mobile) == 11:
+        rp = re.compile('^0\d{2,3}\d{7,8}$|^1[3-9]\d{9}$|^147\d{8}$')
+        phone_match = rp.match(mobile)
+        if phone_match:
+            return True
+        else:
+            return False
+    else:
+        return False
+
+
+def random_nick_name():
+    """
+    获取昵称:前2位小写字母，后两位数字
+    :return:
+    """
+    rand_char = range(ord('a'), ord('z'))
+    s = []
+    for n in range(2):
+        x = random.choice(rand_char)
+        s.append(chr(x))
+    rand_char = range(0, 9)
+    for n in range(6):
+        x = random.choice(rand_char)
+        s.append(str(x))
     return ''.join(s)

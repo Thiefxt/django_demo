@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django_filters',
 
     'booktest.apps.BooktestConfig',
+    'su_user.apps.SuUserConfig',
 ]
 
 MIDDLEWARE = [
@@ -82,7 +83,7 @@ WSGI_APPLICATION = 'demo.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': "demo_order",
+        'NAME': "eco_server_user_vip",
         "HOST": "127.0.0.1",
         "PORT": "3306",
         "USER": "root",

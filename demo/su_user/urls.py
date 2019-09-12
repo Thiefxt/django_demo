@@ -6,3 +6,10 @@
 @Description		: 
 @Software           : PyCharm
 """
+from django.urls import path
+
+from su_user import views
+
+
+urlpatterns = [
+]

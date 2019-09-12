@@ -1,10 +1,11 @@
 import hashlib
 import re
+import time
 
 from django.db import models
 
 # Create your models here.
-from utils.demo_help import ValidationError, RET, Language
+from utils.demo_help import ValidationError, RET, Language, random_str
 
 
 class SuUsers(models.Model):
