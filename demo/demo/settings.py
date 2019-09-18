@@ -83,7 +83,7 @@ WSGI_APPLICATION = 'demo.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': "eco_server_user_vip",
+        'NAME': "demo_order",
         "HOST": "127.0.0.1",
         "PORT": "3306",
         "USER": "root",

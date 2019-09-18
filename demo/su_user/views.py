@@ -37,3 +37,33 @@ class Enrollment(APIView):
         return CstResponse(RET.OK, Language.get('register_success'))
 
 
+class Sign(object):
+    __single = None
+
+    def __init__(self):
+        self.headers = {}
+
+    def __new__(cls, *args, **kwargs):
+        if not cls.__single:
+            cls.__single = super().__new__(cls, *args, **kwargs)
+        return cls.__single
+
+    def kw(self, **kwargs):
+        self.headers.update(kwargs)
+        return self.headers
+
+
+class DemoEn(APIView):
+    def get(self, request):
+        sign1 = Sign()
+        print(sign1.kw(a=random_nick_name()))
+        print(id(sign1))
+        return CstResponse(RET.OK)
+
+
+class DemoEnt(APIView):
+    def get(self, request):
+        sign1 = Sign()
+        print(sign1.kw(b=random_nick_name()))
+        print(id(sign1))
+        return CstResponse(RET.OK)
