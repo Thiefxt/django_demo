@@ -31,9 +31,12 @@ class UserBrowseHistoryView(GenericAPIView):
 
 class MyTest(APIView):
     def get(self, request):
-        order = SoOrder.objects.filter(buyer_id="99")
+        buyer_id = request.query_params.get("buyer_id")
+        if not buyer_id:
+            return Response({"code": 400, "msg": "参数错误"})
+        order = SoOrder.objects.filter(buyer_id=buyer_id)
         serializer = SoOrderSerializer(order, many=True)
-        return Response(serializer.data)
+        return Response({"code": 200, "msg": "OK", "data": serializer.data})
 
 
 class CreateOrder(APIView):

@@ -166,6 +166,7 @@ SESSION_CACHE_ALIAS = "default"
 
 # drf配置
 REST_FRAMEWORK = {
+    'EXCEPTION_HANDLER': 'utils.demo_help.exception_handler',
     # 过滤
     'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',)
 }

@@ -6,3 +6,13 @@
 @Description		: 
 @Software           : PyCharm
 """
+from rest_framework import serializers
+
+from su_user.models import SuUsers
+
+
+class UserInfoSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = SuUsers
+        fields = "__all__"

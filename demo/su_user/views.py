@@ -1,40 +1,15 @@
-import re
-
-from django.shortcuts import render
-
 # Create your views here.
-from raven.utils.wsgi import get_client_ip
+import time
+
+import jwt
 from rest_framework.views import APIView
 
+from demo import settings
 from su_user.models import SuUsers
-from utils.demo_help import CstResponse, RET, Language, judge_mobile, random_nick_name
-
-
-class Enrollment(APIView):
-    """注册单步"""
-
-    def post(self, request):
-        mobile = request.data.get('mobile')
-        code = request.data.get('code')
-        password = request.data.get('password')
-        device = request.data.get('device', 'web')
-        source = request.META.get('HTTP_SOURCE', 1)
-        if not all([mobile, password, code, device]):
-            return CstResponse(RET.PARAMERR)
-        if not re.match(r"[0-9a-zA-Z~!@#$%^&*?\.+\-,/]{6,16}$", password):
-            return CstResponse(RET.DATAERR, Language.get("password_err"))
-        if judge_mobile(mobile):
-            ct = SuUsers.objects.filter(mobile=mobile).count()
-        else:
-            return CstResponse(RET.PARAMERR)
-        if ct > 0:
-            return CstResponse(400, Language.get('user_registered'))
-        user_data = {'mobile': mobile}
-        # cst_func.verification_code(mobile, code)
-        nickname = random_nick_name()
-        remote_addr = get_client_ip(request.META)
-
-        return CstResponse(RET.OK, Language.get('register_success'))
+from su_user.serializers import UserInfoSerializer
+from utils.auth_user import PCAuthentication
+from utils.demo_help import CstResponse, RET, random_nick_name
+from utils.set_jwt import set_token
 
 
 class Sign(object):
@@ -67,3 +42,50 @@ class DemoEnt(APIView):
         print(sign1.kw(b=random_nick_name()))
         print(id(sign1))
         return CstResponse(RET.OK)
+
+
+class JwtDemo(APIView):
+
+    def post(self, request):
+        token_dict = {
+            "user_id": 1,
+            'iat': int(time.time()),
+            'user_name': 'lowman',
+            'exp': int(time.time() + 60*60)
+        }
+        token = jwt.encode(token_dict, settings.SECRET_KEY, algorithm='HS256')
+        return CstResponse(RET.OK, data={"user_id": 1, "user_name": "lowman", "token": token})
+
+
+class UserInfo(APIView):
+    authentication_classes = [PCAuthentication]
+
+    def get(self, request):
+        user = request.user
+        user_info = UserInfoSerializer(user).data
+        return CstResponse(RET.OK, data=user_info)
+
+
+class Register(APIView):
+
+    def post(self, request):
+        mobile = request.data.get("mobile")
+        password = request.data.get("password")
+        if not all([password, mobile]):
+            return CstResponse(RET.PARAMERR)
+        user = SuUsers.objects.filter(mobile=mobile).first()
+        if user:
+            return CstResponse(RET.MOBILE_ERR)
+        user = SuUsers.objects.create(
+            mobile=mobile,
+            nick_name="Thief",
+            status="1",
+            reg_time=int(time.time()),
+            register_source=1
+        )
+        user.set_password(password)
+        user.save()
+
+        data = set_token(user)
+        return CstResponse(RET.OK, data=data)
+

@@ -67,7 +67,7 @@ class CstException(Exception):
     def __init__(self, code, message=None):
         self.code = code
         self.message = message
-        super(CstException, self).__init__(message)
+        super(CstException, self).__init__()
 
 
 class ValidationError(Exception):
@@ -77,7 +77,7 @@ class ValidationError(Exception):
     def __init__(self, code, message=None):
         self.code = code
         self.message = message
-        super(ValidationError, self).__init__(message)
+        super(ValidationError, self).__init__()
 
 
 def exception_handler(exc, context):
