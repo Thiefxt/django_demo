@@ -135,26 +135,26 @@ STATIC_URL = '/static/'
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': 'redis://192.168.50.31:6379/0',
+        'LOCATION': 'redis://127.0.0.1:6379/0',
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
-             "PASSWORD": "ecouser2.0",
+             # "PASSWORD": "ecouser2.0",
         },
     },
     "user_server": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://192.168.50.31:6379/2",
+        "LOCATION": "redis://127.0.0.1:6379/2",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
-            "PASSWORD": "ecouser2.0"
+            # "PASSWORD": "ecouser2.0"
         },
     },
     "user_ex": {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': 'redis://192.168.50.31:6379/3',
+        'LOCATION': 'redis://127.0.0.1:6379/3',
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
-            "PASSWORD": "ecouser2.0",
+            # "PASSWORD": "ecouser2.0",
         },
     },
 

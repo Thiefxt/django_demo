@@ -4,6 +4,7 @@ import time
 import jwt
 from rest_framework.views import APIView
 
+from celery_tasks.celery_demo.tasks import celery_test
 from demo import settings
 from su_user.models import SuUsers
 from su_user.serializers import UserInfoSerializer
@@ -47,6 +48,7 @@ class DemoEnt(APIView):
 class JwtDemo(APIView):
 
     def post(self, request):
+        celery_test.delay(1, 2)
         token_dict = {
             "user_id": 1,
             'iat': int(time.time()),
