@@ -1,11 +1,10 @@
 # Create your views here.
+import re
 import time
 
-import jwt
 from rest_framework.views import APIView
 
 from celery_tasks.celery_demo.tasks import celery_test
-from demo import settings
 from su_user.models import SuUsers
 from su_user.serializers import UserInfoSerializer
 from utils.auth_user import PCAuthentication
@@ -46,17 +45,27 @@ class DemoEnt(APIView):
 
 
 class JwtDemo(APIView):
-
+    """登录"""
     def post(self, request):
-        celery_test.delay(1, 2)
-        token_dict = {
-            "user_id": 1,
-            'iat': int(time.time()),
-            'user_name': 'lowman',
-            'exp': int(time.time() + 60*60)
-        }
-        token = jwt.encode(token_dict, settings.SECRET_KEY, algorithm='HS256')
-        return CstResponse(RET.OK, data={"user_id": 1, "user_name": "lowman", "token": token})
+        # celery_test.delay(10, 20)
+        data = request.data
+        mobile = data.get("mobile")
+        password = data.get("password")
+        if not all([mobile, password]):
+            return CstResponse(RET.PARAMERR)
+        if not re.match(r"'^0\d{2,3}\d{7,8}$|^1[3-9]\d{9}$|^147\d{8}$'", mobile):
+            return CstResponse(RET.DATAERR, "手机号输入错误")
+
+        user = SuUsers.objects.filter(mobile=mobile).first()
+        if not user:
+            return CstResponse(RET.USERERR)
+        if not user.verification_password(password):
+            return CstResponse(RET.PWDERR)
+        if user.status != 1:
+            return CstResponse(RET.USER_STATUS)
+
+        data_dict = set_token(user)
+        return CstResponse(RET.OK, data=data_dict)
 
 
 class UserInfo(APIView):
@@ -69,21 +78,26 @@ class UserInfo(APIView):
 
 
 class Register(APIView):
+    """注册"""
 
     def post(self, request):
         mobile = request.data.get("mobile")
         password = request.data.get("password")
         if not all([password, mobile]):
             return CstResponse(RET.PARAMERR)
+        if not re.match(r"'^0\d{2,3}\d{7,8}$|^1[3-9]\d{9}$|^147\d{8}$'", mobile):
+            return CstResponse(RET.DATAERR, "手机号输入错误")
+        if not re.match(r"[0-9a-zA-Z~!@#$%^&*?\.+\-,/]{6,16}$", password):
+            return CstResponse(RET.DATAERR, "密码格式错误")
         user = SuUsers.objects.filter(mobile=mobile).first()
         if user:
             return CstResponse(RET.MOBILE_ERR)
         user = SuUsers.objects.create(
             mobile=mobile,
             nick_name="Thief",
-            status="1",
-            reg_time=int(time.time()),
-            register_source=1
+            status="1",                 # 用户状态,1[激活],2[冻结]
+            reg_time=int(time.time()),  # 注册时间
+            register_source=1           # 注册来源
         )
         user.set_password(password)
         user.save()
