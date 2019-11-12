@@ -2,6 +2,7 @@
 import re
 import time
 
+from django.db import transaction
 from rest_framework.views import APIView
 
 from celery_tasks.celery_demo.tasks import celery_test
@@ -65,13 +66,14 @@ class JwtDemo(APIView):
             return CstResponse(RET.USER_STATUS)
 
         data_dict = set_token(user)
-        return CstResponse(RET.OK, data=data_dict)
+        return CstResponse(RET.OK, "登录成功", data=data_dict)
 
 
 class UserInfo(APIView):
     authentication_classes = [PCAuthentication]
 
     def get(self, request):
+        """用户信息"""
         user = request.user
         user_info = UserInfoSerializer(user).data
         return CstResponse(RET.OK, data=user_info)
@@ -85,23 +87,24 @@ class Register(APIView):
         password = request.data.get("password")
         if not all([password, mobile]):
             return CstResponse(RET.PARAMERR)
-        if not re.match(r"'^0\d{2,3}\d{7,8}$|^1[3-9]\d{9}$|^147\d{8}$'", mobile):
+        if not re.match(r"^0\d{2,3}\d{7,8}$|^1[3-9]\d{9}$|^147\d{8}$", mobile):
             return CstResponse(RET.DATAERR, "手机号输入错误")
         if not re.match(r"[0-9a-zA-Z~!@#$%^&*?\.+\-,/]{6,16}$", password):
             return CstResponse(RET.DATAERR, "密码格式错误")
         user = SuUsers.objects.filter(mobile=mobile).first()
         if user:
             return CstResponse(RET.MOBILE_ERR)
-        user = SuUsers.objects.create(
-            mobile=mobile,
-            nick_name="Thief",
-            status="1",                 # 用户状态,1[激活],2[冻结]
-            reg_time=int(time.time()),  # 注册时间
-            register_source=1           # 注册来源
-        )
-        user.set_password(password)
-        user.save()
+        with transaction.atomic():
+            user = SuUsers.objects.create(
+                mobile=mobile,
+                nick_name="Thief",
+                status="1",                 # 用户状态,1[激活],2[冻结]
+                reg_time=int(time.time()),  # 注册时间
+                register_source=1           # 注册来源
+            )
+            user.set_password(password)
+            user.save()
 
         data = set_token(user)
-        return CstResponse(RET.OK, data=data)
+        return CstResponse(RET.OK, "注册成功", data=data)
 
