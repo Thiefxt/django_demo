@@ -272,6 +272,14 @@ def judge_mobile(mobile):
         return False
 
 
+def judge_email(email):
+    re_email = re.compile(r"^[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?$")
+    if re_email.match(email):
+        return True
+    else:
+        return False
+
+
 def random_nick_name():
     """
     获取昵称:前2位小写字母，后两位数字
@@ -287,3 +295,22 @@ def random_nick_name():
         x = random.choice(rand_char)
         s.append(str(x))
     return ''.join(s)
+
+
+def parameter_check(serializer, request):
+    """
+    Parameter check
+    :param serializer:
+    :param request:
+    :return:
+    """
+    if request.method == "GET" or request.method == "DELETE":
+        data_req = request.query_params
+    elif request.method == "POST" or request.method == "PUT":
+        data_req = request.data
+    else:
+        raise CstException(RET.REQERR)
+    serializer = serializer(data=data_req)
+    serializer.is_valid(raise_exception=True)
+    data_dict = serializer.data
+    return data_dict
