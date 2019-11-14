@@ -6,8 +6,8 @@
 @Description		: 
 @Software           : PyCharm
 """
-from django.core.management import BaseCommand, CommandError
-from booktest.models import SoOrder
+from django.core.management import BaseCommand
+from demo.apps.booktest.models import SoOrder
 
 
 class Command(BaseCommand):

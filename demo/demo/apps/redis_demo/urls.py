@@ -8,8 +8,7 @@
 """
 from django.urls import path
 
-from redis_demo import views
-
+from demo.apps.redis_demo import views
 
 urlpatterns = [
     path("redis", views.RedisExpiredMonitoring.as_view()),

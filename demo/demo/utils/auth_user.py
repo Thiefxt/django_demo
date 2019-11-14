@@ -11,7 +11,7 @@ from rest_framework import authentication
 
 from demo import settings
 from su_user.models import SuUsers
-from utils.demo_help import CstException, RET, CstResponse
+from demo.utils.demo_help import CstException, RET
 
 
 class PCAuthentication(authentication.BaseAuthentication):

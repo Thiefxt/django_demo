@@ -2,15 +2,13 @@
 import re
 import time
 
-from django.db import transaction
 from rest_framework.views import APIView
 
-from celery_tasks.celery_demo.tasks import celery_test
 from su_user.models import SuUsers
 from su_user.serializers import UserInfoSerializer
-from utils.auth_user import PCAuthentication
-from utils.demo_help import CstResponse, RET, random_nick_name
-from utils.set_jwt import set_token
+from demo.utils.auth_user import PCAuthentication
+from demo.utils.demo_help import CstResponse, RET, random_nick_name
+from demo.utils.set_jwt import set_token
 
 
 class Sign(object):
@@ -94,16 +92,16 @@ class Register(APIView):
         user = SuUsers.objects.filter(mobile=mobile).first()
         if user:
             return CstResponse(RET.MOBILE_ERR)
-        with transaction.atomic():
-            user = SuUsers.objects.create(
-                mobile=mobile,
-                nick_name="Thief",
-                status="1",                 # 用户状态,1[激活],2[冻结]
-                reg_time=int(time.time()),  # 注册时间
-                register_source=1           # 注册来源
-            )
-            user.set_password(password)
-            user.save()
+        # with transaction.atomic():
+        user = SuUsers.objects.create(
+            mobile=mobile,
+            nick_name="Thief",
+            status="1",                 # 用户状态,1[激活],2[冻结]
+            reg_time=int(time.time()),  # 注册时间
+            register_source=1           # 注册来源
+        )
+        user.set_password(password)
+        user.save()
 
         data = set_token(user)
         return CstResponse(RET.OK, "注册成功", data=data)

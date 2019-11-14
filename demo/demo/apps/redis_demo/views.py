@@ -10,15 +10,15 @@ class RedisExpiredMonitoring(GenericAPIView):
     def get(self, request):
 
         redis_conn = get_redis_connection("user_ex")
-        pl = redis_conn.pipeline()
-        access_token = redis_conn.get("WX_BASE_ACCESS_TOKEN")
+        # pl = redis_conn.pipeline()
+        access_token = redis_conn.get("name")
         jsapi = redis_conn.get("WEIXIN_JS_API_TICKET")
         if access_token:
             print(access_token.decode())
         if jsapi:
             print(jsapi.decode())
-        pl.set("name", "xiao")
-        pl.execute()
+        redis_conn.setex("name", 60, "tao")
+        # pl.execute()
         name = redis_conn.get("name")
         print(name.decode())
         return Response({"test": None})

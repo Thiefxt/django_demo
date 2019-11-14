@@ -10,7 +10,7 @@ from rest_framework.views import APIView
 # Create your views here.
 from booktest.models import SoOrderGoods, SoOrder
 from booktest.serializers import SoOrderSerializer, SoOrderSerializerTset, SoOrderSerializerCher
-from utils.my_page import Standard
+from demo.utils.my_page import Standard
 
 
 class UserBrowseHistoryView(GenericAPIView):

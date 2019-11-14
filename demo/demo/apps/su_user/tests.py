@@ -2,7 +2,7 @@ import time
 import unittest
 
 from django.db import connection
-from django.test import TestCase
+from django.test import TestCase, TransactionTestCase
 from rest_framework.test import APIRequestFactory, force_authenticate, APIClient
 
 
@@ -14,15 +14,14 @@ class TestDemo(TestCase):
         self.factory = APIClient()
         self.mobile = "18773993654"
         self.password = "012356"
-        self.factory.credentials(HTTP_AUTHORIZATION=self.token)
-        print(self.token)
+        self.factory.credentials(HTTP_AUTHORIZATION=TestDemo.token)
 
-    def tearDown(self):
-        """每个测试用例执行之后做操作"""
-        self.token = getattr(TestDemo, "token")
+    # def tearDown(self):
+    #     """每个测试用例执行之后做操作"""
+    #     self.factory.credentials(HTTP_AUTHORIZATION=TestDemo.token)
 
     # @unittest.skip("I don't want to run this case.")
-    def test_user_aregister(self):
+    def test_auth_user_register(self):
         resp = self.client.post("/api/register", {"mobile": self.mobile, "password": self.password})
         self.assertEqual(resp.status_code, 200)
         json_data = resp.json()
@@ -30,12 +29,11 @@ class TestDemo(TestCase):
         self.assertEqual(json_data.get("code"), 200, msg="注册失败： %s" % json_data.get("msg"))
         TestDemo.token = json_data.get("data").get("token")
 
-    @unittest.skip("I don't want to run this case.")
     def test_user_login(self):
         resp = self.client.post("/api/login", {"mobile": self.mobile, "password": self.password})
         self.assertEqual(resp.status_code, 200)
         json_data = resp.json()
-        # print(json_data)
+        print(json_data)
         self.assertEqual(json_data.get("code"), 200, msg="服务器异常未正常返回： %s" % json_data.get("msg"))
 
     def test_user_info(self):
@@ -43,5 +41,5 @@ class TestDemo(TestCase):
         resp = self.factory.get("/api/user_info")
         self.assertEqual(resp.status_code, 200)
         json_data = resp.json()
-        # print(json_data)
+        print(json_data)
         self.assertEqual(json_data.get("code"), 200, msg=json_data.get("msg"))

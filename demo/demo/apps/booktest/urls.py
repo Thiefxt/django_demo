@@ -7,8 +7,7 @@
 @Software           : PyCharm
 """
 from django.urls import path
-from booktest import views
-
+from demo.apps.booktest import views
 
 urlpatterns = [
     path("query", views.MyTest.as_view()),

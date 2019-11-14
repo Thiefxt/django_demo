@@ -10,7 +10,6 @@ from django.urls import path
 
 from su_user import views
 
-
 urlpatterns = [
     path("demo", views.DemoEn.as_view()),
     path("demo1", views.DemoEnt.as_view()),
