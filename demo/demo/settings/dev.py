@@ -50,7 +50,6 @@ INSTALLED_APPS = [
     'django_filters',
 
     'booktest',
-    'su_user',
 ]
 
 MIDDLEWARE = [
