@@ -11,7 +11,7 @@ coreapi==2.3.3
 coreschema==0.0.4
 cryptography==2.7
 decorator==4.4.0
-Django==2.0.13
+Django==2.2.10
 django-cors-headers==3.0.2
 django-crispy-forms==1.7.2
 django-extensions==2.2.1
