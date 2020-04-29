@@ -23,6 +23,7 @@ import os, sys
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))  # 给项目追加导包路径
+sys.path.insert(0, BASE_DIR)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
@@ -50,6 +51,8 @@ INSTALLED_APPS = [
     'django_filters',
 
     'booktest',
+    'orders',
+    'users',
 ]
 
 MIDDLEWARE = [
@@ -179,3 +182,13 @@ REST_FRAMEWORK = {
     # 过滤
     'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',)
 }
+
+# celery配置文件
+# 指定任务队列存取位置
+CELERY_BROKER_URL = "redis://127.0.0.1:6379/7"
+
+# # 使用redis存储结果
+# result_backend = 'redis://127.0.0.1/8'
+
+
+CELERY_BACKEND_URL = 'redis://127.0.0.1:6379/8'

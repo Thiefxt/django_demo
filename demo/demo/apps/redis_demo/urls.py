@@ -12,4 +12,8 @@ from demo.apps.redis_demo import views
 
 urlpatterns = [
     path("redis", views.RedisExpiredMonitoring.as_view()),
+    path("redis/demo", views.RedisDemo.as_view()),
+
+
+    path("celery_test", views.CeleryTest.as_view()),
 ]
