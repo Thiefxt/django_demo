@@ -10,9 +10,8 @@ import os
 
 from celery import Celery
 
-from celery_tasks.config import CELERY_BACKEND_URL
+from celery_tasks.celery_config import CELERY_BACKEND_URL
 
-import os
 if not os.getenv('DJANGO_SETTINGS_MODULE'):
     os.environ['DJANGO_SETTINGS_MODULE'] = 'demo.settings.dev'
 
