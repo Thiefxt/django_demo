@@ -20,6 +20,8 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 
 import os, sys
 
+from demo.settings.config import *
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))  # 给项目追加导包路径
@@ -31,8 +33,6 @@ sys.path.insert(0, BASE_DIR)
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'py55mxg&(%mj=2dt)qc#w!k0ed$nmb&!e16^4f5kzk8a5&e$)*'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
@@ -88,21 +88,6 @@ WSGI_APPLICATION = 'demo.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-# 数据库的配置
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': "demo_order",
-        "HOST": "127.0.0.1",
-        "PORT": "3306",
-        "USER": "root",
-        "PASSWORD": "123456",
-        "TEST": {
-            "NAME": "test_demo"
-        }
-    }
-}
-
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
 
@@ -142,37 +127,37 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 
-# 配置redis数据库
-CACHES = {
-    'default': {
-        'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': 'redis://127.0.0.1:6379/0',
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-             # "PASSWORD": "ecouser2.0",
-        },
-    },
-    "user_server": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/2",
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-            # "PASSWORD": "ecouser2.0"
-        },
-    },
-    "user_ex": {
-        'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': 'redis://127.0.0.1:6379/3',
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-            # "PASSWORD": "ecouser2.0",
-        },
-    },
-
-}
-# 把session后端引擎指定为内存缓存
-SESSION_ENGINE = "django.contrib.sessions.backends.cache"
-SESSION_CACHE_ALIAS = "default"
+# # 配置redis数据库
+# CACHES = {
+#     'default': {
+#         'BACKEND': 'django_redis.cache.RedisCache',
+#         'LOCATION': 'redis://127.0.0.1:6379/0',
+#         "OPTIONS": {
+#             "CLIENT_CLASS": "django_redis.client.DefaultClient",
+#              # "PASSWORD": "ecouser2.0",
+#         },
+#     },
+#     "user_server": {
+#         "BACKEND": "django_redis.cache.RedisCache",
+#         "LOCATION": "redis://127.0.0.1:6379/2",
+#         "OPTIONS": {
+#             "CLIENT_CLASS": "django_redis.client.DefaultClient",
+#             # "PASSWORD": "ecouser2.0"
+#         },
+#     },
+#     "user_ex": {
+#         'BACKEND': 'django_redis.cache.RedisCache',
+#         'LOCATION': 'redis://127.0.0.1:6379/3',
+#         "OPTIONS": {
+#             "CLIENT_CLASS": "django_redis.client.DefaultClient",
+#             # "PASSWORD": "ecouser2.0",
+#         },
+#     },
+#
+# }
+# # 把session后端引擎指定为内存缓存
+# SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+# SESSION_CACHE_ALIAS = "default"
 
 
 # drf配置

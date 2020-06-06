@@ -14,7 +14,7 @@ from celery.schedules import crontab
 CELERY_BROKER_URL = "redis://127.0.0.1:6379/7"
 
 # # 使用redis存储结果
-# result_backend = 'redis://127.0.0.1/8'
+BACKEND_URL = 'redis://127.0.0.1:6379/6'      # 结果存储
 
 
 CELERY_BACKEND_URL = 'redis://127.0.0.1:6379/8'

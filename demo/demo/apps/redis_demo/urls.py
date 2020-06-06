@@ -16,4 +16,7 @@ urlpatterns = [
 
 
     path("celery_test", views.CeleryTest.as_view()),
+    path("redis", views.TestRedis.as_view()),
+
+    path("cycle_analysis", views.ActualCycleAnalysis.as_view()),
 ]
