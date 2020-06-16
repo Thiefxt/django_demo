@@ -1,7 +1,6 @@
 # Create your views here.
 import json
 import time
-import numpy as np
 
 from celery.result import AsyncResult
 from django.db import connections
@@ -13,6 +12,7 @@ from celery_tasks.celery_demo.tasks import test_celery
 from celery_tasks.main import celery_app
 from demo.utils.db_utils import dict_fetchall
 from demo.utils.demo_help import CstResponse, RET
+from lib_algorithm.data_process import data_filtering
 
 
 class RedisExpiredMonitoring(GenericAPIView):
@@ -89,32 +89,17 @@ class TestRedis(GenericAPIView):
         return Response("ok")
 
 
-def data_filtering(arr, n=1):
-    """
-    清洗曲线较高或较低数据，提取预期值
-    :param arr: 二维数组如[[1], [2], [3]]
-    :param n: 递归深度，默认1次
-    :return: 预期值平均数
-    """
-    if n <= 0:
-        return np.mean(arr)
-    arr_mean = np.mean(arr)
-    arr_std = np.std(arr, ddof=1)
-    arr = [i for i in arr if arr_mean - arr_std < i[0] < arr_mean + arr_std]
-    return data_filtering(arr, n-1)
-
-
 class ActualCycleAnalysis(GenericAPIView):
     """
     实际周期分析
     """
 
     def get(self, request):
-        sql = f"""-- select Circle from Plc_MinStatistics  where Itemcode = 'ZWP12063A' and PassTime between '2020-06-04 20:00:00' and '2020-06-05 08:00:00'order by PassTime desc"""
+        # sql = f"""-- select Circle from Plc_MinStatistics  where Itemcode = 'ZWP12063A' and PassTime between '2020-06-04 20:00:00' and '2020-06-05 08:00:00'order by PassTime desc"""
         sql = f"""select  Circle from Plc_MinStatistics  where Itemcode = '16057-B05' and Circle <> 0 and Circle is not null order by PassTime desc"""
         with connections['mes'].cursor() as cursor:
             cursor.execute(sql)
             rows = [list(i) for i in cursor.fetchall()]
-        a = data_filtering(rows, n=2)
+        a = data_filtering(rows)
         print(a / 10)
         return CstResponse(RET.OK)
