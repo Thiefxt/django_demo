@@ -40,6 +40,8 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 
 INSTALLED_APPS = [
+    'channels',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -52,6 +54,7 @@ INSTALLED_APPS = [
 
     'booktest',
     'users',
+    'chat',
 ]
 
 MIDDLEWARE = [
@@ -176,3 +179,6 @@ CELERY_BROKER_URL = "redis://127.0.0.1:6379/7"
 
 
 CELERY_BACKEND_URL = 'redis://127.0.0.1:6379/8'
+
+ASGI_APPLICATION = 'demo.routing.application'
+
