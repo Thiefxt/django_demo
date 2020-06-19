@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 # Create your views here.
-from booktest.models import SoOrderGoods, SoOrder
+from booktest.models import SoOrderGoods, SoOrder, PackagingRules
 from booktest.serializers import SoOrderSerializer, SoOrderSerializerTset, SoOrderSerializerCher
 from demo.utils.my_page import Standard
 
@@ -94,3 +94,9 @@ class MyPage(ListAPIView):
     queryset = SoOrder.objects.all()
     pagination_class = Standard
     serializer_class = SoOrderSerializer
+
+
+class TestValuesList(APIView):
+    def get(self, request):
+        pack = PackagingRules.objects.all().values_list("client_number", flat=True)
+        return Response(pack)

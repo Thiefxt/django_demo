@@ -65,3 +65,75 @@ class SoOrderGoods(models.Model):
     class Meta:
         managed = False
         db_table = 'so_order_goods'
+
+
+class PackagingMaterial(models.Model):
+    """包装材料表"""
+    packaging_rules = models.ForeignKey('PackagingRules', models.DO_NOTHING, related_name="packaging_material")
+    packaging_number = models.CharField(max_length=64, blank=True, null=True, default='', help_text="编号")
+    packaging_name = models.CharField(max_length=32, blank=True, null=True, default='', help_text="包装名称")
+    packaging_material = models.CharField(max_length=64, blank=True, null=True, default='', help_text="包装材质")
+    packaging_specification = models.CharField(max_length=64, blank=True, null=True, default='', help_text="包装规格")
+    packaging_dose = models.IntegerField(blank=True, null=True, default=0, help_text="包装用量")
+    packaging_per_unit = models.IntegerField(blank=True, null=True, default=0, help_text="每单位装入产品")
+
+    class Meta:
+        managed = False
+        db_table = 'packaging_material'
+
+
+class PackagingMethodLabel(models.Model):
+    """包装方法或标签表"""
+    packaging_rules = models.ForeignKey('PackagingRules', models.DO_NOTHING, related_name="method_label")
+    packaging_description = models.CharField(max_length=255, blank=True, null=True, default='', help_text="包装描述")
+    packaging_description_two = models.CharField(max_length=255, blank=True, null=True, default='', help_text="包装描述2")
+    packaging_image_url = models.CharField(max_length=255, blank=True, null=True, default='', help_text="包装方法或标签图片url")
+    packaging_type = models.IntegerField(default=1, help_text="类型1:方法，2：标签")
+
+    class Meta:
+        managed = False
+        db_table = 'packaging_method_label'
+
+
+class PackagingRules(models.Model):
+    """包装规范表"""
+
+    PACKAGING_STATUS = (
+        (1, '待审核'),
+        (2, '待发布'),
+        (3, '已发布'),
+        (4, '已作废'),
+        (5, '驳回')
+    )
+
+    tu_fan = models.CharField(max_length=128, blank=True, null=True, default='', help_text="客户图番")
+    client_number = models.CharField(max_length=128, blank=True, null=True, default='', help_text="客户编号")
+    product_number = models.CharField(max_length=128, blank=True, null=True, default='', help_text="产品编号")
+    product_name = models.CharField(max_length=128, blank=True, null=True, default='', help_text="产品名称")
+    mold_number = models.CharField(max_length=128, blank=True, null=True, default='', help_text="模具编号")
+    file_number = models.CharField(max_length=128, blank=True, null=True, default='', help_text="文件编号")
+    founder_name = models.CharField(max_length=64, blank=True, null=True, default='', help_text="创建人名")
+    founder_code = models.IntegerField(blank=True, null=True, default=0, help_text="创建人工号")
+    modified_by_name = models.CharField(max_length=64, blank=True, null=True, default='', help_text="最近修改人")
+    modified_by_name_code = models.IntegerField(blank=True, null=True, default=0, help_text="最近修改人工号")
+    create_time = models.DateTimeField(blank=True, null=True, default=datetime.datetime.now(), help_text="创建时间")
+    recently_modified_time = models.DateTimeField(blank=True, null=True, help_text="最近修改时间")
+    version = models.DecimalField(max_digits=6, decimal_places=1, default=1.0, help_text="版本号")
+    status = models.IntegerField(default=1, choices=PACKAGING_STATUS, help_text="状态1:待审核，2：待发布，3，已发布,4:已作废,5驳回")
+    status_str = models.CharField(max_length=64, default="待审核", help_text="状态1:待审核，2：待发布，3，已发布,4:已作废,5驳回")
+
+    class Meta:
+        managed = False
+        db_table = 'packaging_rules'
+
+
+class PackagingRulesReasonFailure(models.Model):
+    """驳回原因"""
+
+    packaging_rules = models.OneToOneField('PackagingRules', models.DO_NOTHING, related_name="reason_failure")
+    turn_down_reason = models.CharField(max_length=256, blank=True, null=True, default='', help_text="驳回原因")
+    turn_down_time = models.DateTimeField(blank=True, null=True, default=datetime.datetime.now(), help_text="驳回时间")
+
+    class Meta:
+        managed = False
+        db_table = 'packaging_rules_reason_failure'

@@ -18,5 +18,6 @@ urlpatterns = [
     path("order_sn", views.Cher.as_view()),
     path("my/page", views.MyPage.as_view()),
     path("history", views.UserBrowseHistoryView.as_view()),    # 浏览记录
+    path("test_values_list", views.TestValuesList.as_view()),
 ]
 
