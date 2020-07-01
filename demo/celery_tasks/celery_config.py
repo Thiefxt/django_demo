@@ -11,13 +11,13 @@ from celery.schedules import crontab
 
 # celery配置文件
 # 指定任务队列存取位置
-CELERY_BROKER_URL = "redis://127.0.0.1:6379/7"
+CELERY_BROKER_URL = "redis://:123456@127.0.0.1:6379/7"
 
 # # 使用redis存储结果
-BACKEND_URL = 'redis://127.0.0.1:6379/6'      # 结果存储
+BACKEND_URL = 'redis://:123456@127.0.0.1:6379/6'      # 结果存储
 
 
-CELERY_BACKEND_URL = 'redis://127.0.0.1:6379/8'
+CELERY_BACKEND_URL = 'redis://:123456@127.0.0.1:6379/8'
 
 # task_serializer = 'json'
 # result_serializer = 'json'
