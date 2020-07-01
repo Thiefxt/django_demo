@@ -8,8 +8,10 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 # Create your views here.
+from booktest.book_test_mixin import TimeAndAttendanceMixin
 from booktest.models import SoOrderGoods, SoOrder, PackagingRules
 from booktest.serializers import SoOrderSerializer, SoOrderSerializerTset, SoOrderSerializerCher
+from demo.utils.demo_help import RequestHelp, CstResponse, RET
 from demo.utils.my_page import Standard
 
 
@@ -100,3 +102,19 @@ class TestValuesList(APIView):
     def get(self, request):
         pack = PackagingRules.objects.all().values_list("client_number", flat=True)
         return Response(pack)
+
+
+class TimeAndAttendance(APIView):
+    """
+    考情取卡 作者：xiaotao 版本号: 文档地址:
+    """
+
+    def get(self, request):
+        data = request.query_params
+        params = {"employeeCode": 33674, "checkDate": "2020-06-29"}
+        obj = TimeAndAttendanceMixin(RequestHelp, params)
+        res = dict()
+        res["clock"] = obj.get_attendance_clock()
+        res["class"] = obj.get_attendance_class()
+        res["leave_data"] = obj.get_attendance_leave_data()
+        return CstResponse(RET.OK, data=res)

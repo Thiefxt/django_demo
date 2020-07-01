@@ -10,6 +10,7 @@ import random
 import re
 import traceback
 
+import requests
 from rest_framework.views import exception_handler as drf_exception_handler
 from django.db import DatabaseError
 from redis.exceptions import RedisError
@@ -64,9 +65,10 @@ class CstException(Exception):
     """
     业务异常类
     """
-    def __init__(self, code, message=None):
+    def __init__(self, code, message=None, data=None):
         self.code = code
         self.message = message
+        self.data = data
         super(CstException, self).__init__()
 
 
@@ -138,6 +140,7 @@ class RET:
     EMAIL_ERR = "409"
     ERROR = "466"
     USER_STATUS = "465"
+    NET_ERR = "460"
 
 
 # 元组中第一个为中文，第二个为英文，第三个为繁体
@@ -167,7 +170,7 @@ language_pack = {
     RET.MOBILE_ERR: ("手机号已被注册请重新输入",),
     RET.EMAIL_ERR: ("邮箱已被注册请重新输入",),
     RET.USER_STATUS: ("账号已被禁用，如有疑义请联系平台客服",),
-    "network_error": ("网络异常，请稍候再试",),
+    RET.NET_ERR: ("网络异常，请稍候再试",),
 }
 
 
@@ -206,41 +209,40 @@ def random_str(length):
     return ''.join(s)
 
 
-def judge_mobile(mobile):
-    if len(mobile) == 11:
-        rp = re.compile('^0\d{2,3}\d{7,8}$|^1[3-9]\d{9}$|^147\d{8}$')
-        phone_match = rp.match(mobile)
-        if phone_match:
-            return True
-        else:
-            return False
-    else:
-        return False
-
-
-def judge_email(email):
-    re_email = re.compile(r"^[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?$")
-    if re_email.match(email):
-        return True
-    else:
-        return False
-
-
-def random_nick_name():
+class RequestHelp(object):
     """
-    获取昵称:前2位小写字母，后两位数字
-    :return:
+    Figure help request help class
     """
-    rand_char = range(ord('a'), ord('z'))
-    s = []
-    for n in range(2):
-        x = random.choice(rand_char)
-        s.append(chr(x))
-    rand_char = range(0, 9)
-    for n in range(6):
-        x = random.choice(rand_char)
-        s.append(str(x))
-    return ''.join(s)
+
+    __single = None
+    headers = {}
+
+    # def __init__(self):
+    #     self.headers = {}
+
+    # def __new__(cls, *args, **kwargs):
+    #     if not cls.__single:
+    #         cls.__single = super().__new__(cls, *args, **kwargs)
+    #     return cls.__single
+
+    # def set_user(self, user_id, username):
+    #     pass
+
+    @classmethod
+    def get(cls, url, params=None):
+        try:
+            res = requests.get(url=url, params=params or {}, headers=cls.headers).json()
+        except Exception as e:
+            raise CstException(RET.NET_ERR)
+        return res
+
+    @classmethod
+    def post(cls, url, data=None):
+        try:
+            res = requests.post(url=url, json=data or {}, headers=cls.headers).json()
+        except Exception as e:
+            raise CstException(RET.NET_ERR)
+        return res
 
 
 def parameter_check(serializer, request):
