@@ -1,6 +1,8 @@
 # Create your views here.
+import datetime
 import json
 import time
+from pprint import pprint
 
 from celery.result import AsyncResult
 from django.db import connections
@@ -10,7 +12,7 @@ from django_redis import get_redis_connection
 
 from celery_tasks.celery_demo.tasks import test_celery
 from celery_tasks.main import celery_app
-from demo.utils.db_utils import dict_fetchall
+from demo.utils.db_utils import dict_fetchall, cursor_execute
 from demo.utils.demo_help import CstResponse, RET
 from lib_algorithm.data_process import data_filtering
 

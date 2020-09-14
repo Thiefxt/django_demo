@@ -9,8 +9,8 @@
 import jwt
 from rest_framework import authentication
 
-from demo import settings
-# from su_user.models import SuUsers
+from demo.settings import dev
+# from users.models import SuUsers
 from demo.utils.demo_help import CstException, RET
 
 
@@ -24,7 +24,7 @@ from demo.utils.demo_help import CstException, RET
 #         if not authorization:
 #             raise CstException(RET.SESSIONERR)
 #         try:
-#             token_dict = jwt.decode(authorization, settings.SECRET_KEY, algorithms=['HS256'])
+#             token_dict = jwt.decode(authorization, dev.SECRET_KEY, algorithms=['HS256'])
 #         except Exception as e:
 #             raise CstException(RET.SESSIONERR)
 #

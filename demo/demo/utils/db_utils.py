@@ -6,6 +6,7 @@
 @Description		: 
 @Software           : PyCharm
 """
+from django.db import connections
 
 
 def dict_fetchall(cursor):
@@ -15,3 +16,12 @@ def dict_fetchall(cursor):
         dict(zip(columns, row))
         for row in cursor.fetchall()
     ]
+
+
+def cursor_execute(sql, db_name="mes"):
+    """execute sql"""
+    with connections[db_name].cursor() as cursor:
+        # cursor.callproc()
+        cursor.execute(sql)
+        rows = dict_fetchall(cursor)
+    return rows
