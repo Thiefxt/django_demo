@@ -19,5 +19,6 @@ urlpatterns = [
     path('api/', include("booktest.urls")),
     path("api/", include("redis_demo.urls")),
     path("chat/", include("chat.urls")),
+    path("file/", include("file_demo.urls")),
 
 ]
