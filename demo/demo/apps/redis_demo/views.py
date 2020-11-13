@@ -2,6 +2,7 @@
 import datetime
 import json
 import time
+import uuid
 from pprint import pprint
 
 from celery.result import AsyncResult
@@ -15,6 +16,38 @@ from celery_tasks.main import celery_app
 from demo.utils.db_utils import dict_fetchall, cursor_execute
 from demo.utils.demo_help import CstResponse, RET
 from lib_algorithm.data_process import data_filtering
+
+
+class RedisDistributedLocks(GenericAPIView):
+    """redis 分布式"""
+
+    def post(self, request):
+        goods_id = request.data.get("goods_id")
+
+        redis_conn = get_redis_connection("inventory")
+        pl = redis_conn.pipeline()
+        client_id = str(uuid.uuid1())
+        pl.setnx(goods_id, client_id)
+        pl.expire(goods_id, 10)
+        result = pl.execute()        # 执行管道
+        if not result[0]:
+            return Response("网络异常，请稍后重试")
+        try:
+            stock = int(redis_conn.get("stock").decode("utf-8"))
+            if stock > 0:
+                stock -= 1
+                redis_conn.set("stock", stock)
+                print("扣减成功，库存剩余：{}".format(stock))
+            else:
+                print("库存不足，扣减失败")
+        finally:
+            goods_id_bit = redis_conn.get(goods_id)
+            if goods_id_bit:
+                client_id_str = goods_id_bit.decode("utf-8")
+                if client_id == client_id_str:
+                    redis_conn.delete(goods_id)
+
+        return Response("ok")
 
 
 class RedisExpiredMonitoring(GenericAPIView):
