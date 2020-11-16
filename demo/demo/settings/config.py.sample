@@ -1,0 +1,98 @@
+"""
+@Author				: xiaotao
+@Email				: 18773993654@163.com
+@Lost modifid		: 2020/6/5 08:52
+@Filename			: config.py
+@Description		:
+@Software           : PyCharm
+"""
+
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = True
+ALLOWED_HOSTS = ["*"]
+driver = 'SQL Server Native Client 10.0'
+
+# 数据库的配置
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'db_mes',
+        'USER': 'root',
+        'PASSWORD': '199616',
+        'HOST': '127.0.0.1',
+        'PORT': '3306',
+        "TEST": {
+            "NAME": "test_demo"
+        }
+    },
+    'mes': {
+         'ENGINE': 'sql_server.pyodbc',
+         'NAME': '',
+         # 'NAME': '',
+         'USER': 'sa',
+         'PASSWORD': '',
+         'HOST': '',
+         'PORT': '',
+         'OPTIONS': {
+              'driver': driver,
+              'MARS_Connection': True,
+
+         },
+     },
+}
+
+
+# 配置redis数据库
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://127.0.0.1:6379/0',
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+             "PASSWORD": "123456",
+        },
+    },
+    "user_server": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/2",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "PASSWORD": "123456"
+        },
+    },
+    "user_ex": {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://127.0.0.1:6379/3',
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "PASSWORD": "123456",
+        },
+    },
+    "inventory": {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://127.0.0.1:6379/8',
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "PASSWORD": "123456",
+        },
+    },
+
+}
+# 把session后端引擎指定为内存缓存
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+SESSION_CACHE_ALIAS = "default"
+
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('redis://:123456@127.0.0.1:6379/0')],
+            # "symmetric_encryption_keys": [SECRET_KEY]
+        },
+    },
+}
+
+
+ATTENDANCE = "http://192.168.0.192:20002/"

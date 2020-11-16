@@ -34,8 +34,6 @@ sys.path.insert(0, BASE_DIR)
 SECRET_KEY = 'py55mxg&(%mj=2dt)qc#w!k0ed$nmb&!e16^4f5kzk8a5&e$)*'
 
 
-ALLOWED_HOSTS = ["*"]
-
 CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ORIGIN_WHITELIST = ()
