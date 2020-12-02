@@ -10,12 +10,24 @@ from django.db import connections
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 from django_redis import get_redis_connection
+from django.core.cache import caches
 
 from celery_tasks.celery_demo.tasks import test_celery
 from celery_tasks.main import celery_app
 from demo.utils.db_utils import dict_fetchall, cursor_execute
 from demo.utils.demo_help import CstResponse, RET
 from lib_algorithm.data_process import data_filtering
+
+cache = caches['inventory']
+
+
+class RedisCacheLocks(GenericAPIView):
+    """redis 分布式"""
+
+    def post(self, request):
+        goods_id = request.data.get("goods_id")
+        with cache.lock(goods_id):
+            pass
 
 
 class RedisDistributedLocks(GenericAPIView):
@@ -26,6 +38,7 @@ class RedisDistributedLocks(GenericAPIView):
 
         redis_conn = get_redis_connection("inventory")
         pl = redis_conn.pipeline()
+        pl.multi()
         client_id = str(uuid.uuid1())
         pl.setnx(goods_id, client_id)
         pl.expire(goods_id, 10)
