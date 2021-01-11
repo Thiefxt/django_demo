@@ -37,8 +37,7 @@ class RedisDistributedLocks(GenericAPIView):
         goods_id = request.data.get("goods_id")
 
         redis_conn = get_redis_connection("inventory")
-        pl = redis_conn.pipeline()
-        pl.multi()
+        pl = redis_conn.pipeline(transaction=True)
         client_id = str(uuid.uuid1())
         pl.setnx(goods_id, client_id)
         pl.expire(goods_id, 10)
